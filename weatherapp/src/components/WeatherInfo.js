@@ -1,26 +1,28 @@
 import { useState, useEffect } from "react";
-import { v4 as uiud } from "uuid";
-
+import WeatherHeader from "./WeatherHeader";
+import CurrentWeather from "./CurrentWeather";
+import { Grid } from "@mui/material";
+import DailyWeather from "./DailyWeather";
+import ConditionalWrapper from "./ConditionalWrapper";
+import HourlyWeather from "./HourlyWeather";
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 const WeatherInfo = (props) => {
   const [weatherData, changeWeatherData] = useState();
-//   const InterpretData=()=>{
-//     const items=[]
-//     if(weatherData && props.place){
-        
-//        if (props.location.length==1){
-//         items.append(<p>Zipcode: {props.place[0]} as of </p>)
-//        }else{
-//         items.append(<p> {props.place[0]}, {props.place[1]} as of </p>)
+  const [selectedButton, setSelectedButton] = useState('Hourly');
+  const handleButtonChange = (event, newSelectedButton) => {
+    setSelectedButton((oldSelectedState)=>{
+      if (oldSelectedState!=newSelectedButton){
+        return newSelectedButton
+      }
+    });
+  };
 
-//        }
-//     }
-//   }
   useEffect(() => {
     const getWeatherInfo = async () => {
       try {
         if (props.location !== undefined) {
        
-            console.log( `https://api.openweathermap.org/data/2.5/onecall?lat=${props.location.lat}&lon=${props.location.long}&exclude=minutely,alerts&appid=${process.env.REACT_APP_WEATHER_LOCATION_API_KEY}&units=imperial`)
           const response = await fetch(
             `https://api.openweathermap.org/data/2.5/onecall?lat=${props.location.lat}&lon=${props.location.long}&exclude=minutely,alerts&appid=${process.env.REACT_APP_WEATHER_LOCATION_API_KEY}&units=imperial`
           );
@@ -36,8 +38,79 @@ const WeatherInfo = (props) => {
       // this now gets called when the component unmounts
     };
   }, [props.location]);
+  const TempRanges=(()=>{
 
-  return <>{console.log(weatherData)}</>;
+    if (weatherData){
+return( {
+  night:weatherData.daily["0"].temp.min,
+  day:weatherData.daily["0"].temp.max
+})
+    }else{
+      return undefined
+    }
+  })
+
+
+
+  const RenderWeatherHourlyAndDailyInfo=()=>{
+
+    if (props.location){
+      return(
+      <>
+      <Grid
+  container
+  spacing={0}
+
+  justifyContent="center"
+  
+  >
+      <ToggleButtonGroup sx={{m:"3rem",  }} value={selectedButton} exclusive onChange={handleButtonChange}>
+      <ToggleButton value="Hourly" aria-label="Hourly">
+        Hourly
+      </ToggleButton>
+      <ToggleButton value="Daily" aria-label="Daily">
+        Daily
+      </ToggleButton>
+    </ToggleButtonGroup>
+    </Grid>
+    {selectedButton === 'Hourly' &&   <HourlyWeather data={weatherData?weatherData.hourly:weatherData}/>}
+    {selectedButton === 'Daily' && <DailyWeather data={weatherData?weatherData.daily:weatherData} />}
+    </>)
+
+    }else{
+      return<></>
+    }
+    }
+  
+  return( <>
+
+
+  
+
+<ConditionalWrapper
+        condition={props.location!==undefined}
+        wrapper={children => <Grid  container
+          xs={12}
+          direction="column"
+          alignItems="center"
+        
+        justifyContent="center">{children}</Grid>}
+       
+      >
+  <WeatherHeader timeInfo={weatherData} event={props.place}/>
+  <CurrentWeather current={weatherData?weatherData.current:weatherData} tempRanges={TempRanges()}
+  
+  />
+  
+  </ConditionalWrapper>
+
+
+  
+ {RenderWeatherHourlyAndDailyInfo()}
+    
+
+ 
+  </>);
 };
 
 export default WeatherInfo;
