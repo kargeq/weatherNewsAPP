@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import WeatherInfo from "./WeatherInfo";
+import WeatherInfo from "./WeatherInfo/WeatherInfo";
 import Select from "react-select";
 import { Grid } from "@mui/material";
 import { Card } from "@mui/material";
@@ -14,6 +14,9 @@ const Weather = () => {
   const handleStateChange = (selectedOption) => {
     setSelectedState(selectedOption);
   };
+  useEffect(() => {
+    document.title = 'Weather';
+  }, []);
   useEffect(() => {
     const getData = async () => {
       try {

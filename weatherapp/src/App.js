@@ -1,9 +1,9 @@
 import logo from './logo.svg';
 import './App.css';
-import { useState } from 'react';
-import Weather from './components/Weather.js'
-import Hierarchy from 'react-hierarchy';
-
+import Weather from './components/Weather/Weather.js'
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import News from './components/News';
+import PageNotFound from './components/PageNotFound'
 function App() {
 
  
@@ -18,17 +18,26 @@ function App() {
   <div className="collapse navbar-collapse" id="navbarSupportedContent">
     <ul className="navbar-nav mr-auto">
       <li className="nav-item active">
-        <a className="nav-link" href="#">Weather <span className="sr-only">(current)</span></a>
+        <Link className="nav-link" to="/">Weather <span className="sr-only">(current)</span></Link>
       </li>
       <li className="nav-item">
-        <a className="nav-link" href="#">News</a>
+        <Link className="nav-link" to="/News">News</Link>
       </li>
+
      
     </ul>
     
   </div>
 </nav>
-  <Weather></Weather>
+<Routes>
+      
+        <Route exact path="/" element={<Weather/>} />
+        <Route path="/News" element={<News/>} />
+        <Route path="*" element={<PageNotFound />} />
+
+       
+      
+</Routes>
 </>
   );
 }

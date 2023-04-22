@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { v4 as uiud } from "uuid";
 import { createClient } from "pexels";
-import WeatherNow from "./WeatherNow";
+import WeatherNow from "./ImageCardCurrentWeather/WeatherNow";
 import colorthief from "colorthief";
 import contrast from 'color-contrast';
 

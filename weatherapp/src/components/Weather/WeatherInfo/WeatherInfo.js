@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import WeatherHeader from "./WeatherHeader";
-import CurrentWeather from "./CurrentWeather";
+import WeatherHeader from "./PartsOfPage/WeatherHeader";
+import CurrentWeather from "./PartsOfPage/CurrentWeather";
 import { Grid } from "@mui/material";
-import DailyWeather from "./DailyWeather";
-import ConditionalWrapper from "./ConditionalWrapper";
-import HourlyWeather from "./HourlyWeather";
+import DailyWeather from "./PartsOfPage/DailyWeather";
+import ConditionalWrapper from "../../ConditionalWrapper";
+import HourlyWeather from "./PartsOfPage/HourlyWeather";
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 const WeatherInfo = (props) => {
