@@ -18,6 +18,7 @@ const Weather = () => {
     document.title = 'Weather';
   }, []);
   useEffect(() => {
+    
     const getData = async () => {
       try {
         if (locationInfo !== undefined) {
@@ -62,6 +63,8 @@ const Weather = () => {
     return () => {
       // this now gets called when the component unmounts
     };
+    localStorage.setItem('locationInfo', JSON.stringify(locationInfo));
+
   }, [locationInfo]);
 
   const validateForm = (event) => {
