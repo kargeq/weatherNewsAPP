@@ -6,11 +6,14 @@ import { Card } from "@mui/material";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import LocationNotFound from "./LocationNotFound"
+import { Helmet } from "react-helmet";
 const Weather = () => {
   const [locationInfo, changeLocation] = useState();
   const [weatherCordinates, ChnageCordinates] = useState();
   const [selectedState, setSelectedState] = useState(null);
   const [error, setError]=useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleStateChange = (selectedOption) => {
     setSelectedState(selectedOption);
   };
@@ -22,6 +25,7 @@ const Weather = () => {
     const getData = async () => {
       try {
         if (locationInfo !== undefined) {
+          setIsLoading(true);
           if (locationInfo.length === 2) {
             const cityName = locationInfo[1];
             const State = locationInfo[0];
@@ -55,7 +59,9 @@ const Weather = () => {
           }
           }
         }
+        setIsLoading(false);
       } catch (error) {
+        setIsLoading(false);
         setError(true)
       }
     };
@@ -88,6 +94,64 @@ const Weather = () => {
 
   return (
     <>
+   {isLoading?<><Helmet>
+    <style>
+      {`
+        :root {
+          --border-width: 7px;
+        }
+
+        .sec-loading {
+          height: 100vh;
+          width: 100vw;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .sec-loading .one {
+          height: 80px;
+          width: 80px;
+          border: var(--border-width) solid black;
+          transform: rotate(45deg);
+          border-radius: 0 50% 50% 50%;
+          position: relative;
+          animation: move 0.5s linear infinite alternate-reverse;
+        }
+
+        .sec-loading .one::before {
+          content: "";
+          position: absolute;
+          height: 55%;
+          width: 55%;
+          border-radius: 50%;
+          border: var(--border-width) solid transparent;
+          border-top-color: black;
+          border-bottom-color: black;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          animation: rotate 1s linear infinite;
+        }
+
+        @keyframes rotate {
+          to {
+            transform: translate(-50%, -50%) rotate(360deg);
+          }
+        }
+
+        @keyframes move {
+          to {
+            transform: translateY(15px) rotate(45deg);
+          }
+        }
+      `}
+    </style>
+   </Helmet>
+   <section class="sec-loading">
+   <div class="one">
+   </div>
+ </section></>:
       <form id="myForm" onSubmit={validateForm}>
        
         <Grid container justifyContent="center">
@@ -138,7 +202,7 @@ const Weather = () => {
             </Grid>
           </Card>
         </Grid>
-      </form>
+      </form>}
       {error?<LocationNotFound></LocationNotFound>: <WeatherInfo
           place={locationInfo}
           location={weatherCordinates}
