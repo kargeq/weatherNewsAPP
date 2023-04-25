@@ -22,11 +22,10 @@ const Weather = () => {
   };
   useEffect(() => {
     document.title = "Weather";
-    console.log("locationInfo")
-    console.log(appState.locationInfo)
+    
     if (appState.locationInfo ) {
       changeLocation(appState.locationInfo);
-      console.log("locationInfo")
+     
      
     }
   }, []);

@@ -1,71 +1,209 @@
-import { Grid } from "@mui/material";
-import { useEffect } from "react";
+import { Grid, Typography } from "@mui/material";
+import { useEffect, useContext, useState } from "react";
 import { Card } from "@mui/material";
 import CardContent from "@mui/material/CardContent";
 import { Helmet } from "react-helmet";
 import NewsCard from "./NewsCard/NewsCard";
 import { v4 as uiud } from "uuid";
-
+import { AppStateContext } from "../AppState";
+import PlagiarismIcon from "@mui/icons-material/Plagiarism";
 const News = () => {
+  const { appState, setAppState } = useContext(AppStateContext);
+  const [searchItem, setSearchItem] = useState();
+  const [currentQuery, setCurrentQuery] = useState("");
+  const [news, setNews] = useState([]);
   useEffect(() => {
     document.title = "News";
+
+    if (appState.currentQuery && appState.searchItem) {
+      setSearchItem(appState.searchItem);
+      setCurrentQuery(appState.currentQuery);
+    }
   }, []);
 
-  const news = {
-    status: "ok",
-    totalResults: 20,
-    articles: [
-      {
-        source: {
-          id: null,
-          name: "CNN",
-        },
-        author: "Analysis by Stephen Collinson, CNN",
-        title:
-          "Biden's big speech: A defense of democracy and a call to action",
-        description:
-          "President Joe Biden on Wednesday night outlined a vision for how to repair a US battered by the coronavirus pandemic, his $2 trillion infrastructure plan and years of disunity, offering an expansive defense of his efforts to reassert America's traditional values on…",
-        url: "https://www.cnn.com/2023/04/21/politics/environmental-justice-biden/index.html",
-        urlToImage:
-          "https://ichef.bbci.co.uk/news/1024/branded_news/15CCE/production/_129449298_emergenciasmadrid.jpg",
-        publishedAt: "2021-04-29T02:17:36Z",
-        content:
-          "Washington (CNN)President Joe Biden on Wednesday night outlined a vision for how to repair a US battered by the coronavirus pandemic, his $2 trillion infrastructure plan and years of disunity, offering … [+10204 chars]",
-      },
-      {
-        source: {
-          id: null,
-          name: "Fox News",
-        },
-        author: "Chris Ciaccia",
-        title: "NASA's Ingenuity helicopter takes first flight on Mars",
-        description:
-          "NASA's Mars helicopter, Ingenuity, has made its historic first flight on the Red Planet, marking the first powered, controlled flight on another planet, according to the space agency.",
-        url: "https://www.cnn.com/2023/04/21/politics/environmental-justice-biden/index.html",
-        urlToImage:
-          "https://res.cloudinary.com/practicaldev/image/fetch/s--vZhwGL1Q--/c_imagga_scale,f_auto,fl_progressive,h_900,q_auto,w_1600/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/ci1qxacirlt8d91iuv0j.png",
-        publishedAt: "2021-04-19T11:55:31Z",
-        content:
-          "NASA's Mars helicopter, Ingenuity, has made its historic first flight on the Red Planet, marking the first powered, controlled flight on another planet, according to the space agency.\r\nThe small helico… [+2627 chars]",
-      },
-    ],
-  };
+  useEffect(() => {
+    const getArticles = async () => {
+      if (news === [] && appState.news !== [] && appState.news) {
+        setNews(appState.news);
+      } else if (searchItem) {
+        try {
+          const response = await fetch(
+            `https://newsapi.org/v2/everything?q=${searchItem}&apiKey=${process.env.REACT_APP_News_API_KEY}&pageSize=20&sortBy=relevancy`
+          );
+          console.log(
+            `https://newsapi.org/v2/everything?q=${searchItem}&apiKey=${process.env.REACT_APP_News_API_KEY}&pageSize=20&sortBy=relevancy`
+          );
+          const jsonData = await response.json();
+          console.log("data");
+          console.log(jsonData);
 
+          //https://newsapi.org/v2/top-headlines?q=Trump&apiKey=3560d834d19e46d7958cf337841f0e5c
+          setNews(jsonData);
+          setAppState((prevState) => ({
+            ...prevState,
+            news: jsonData,
+          }));
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+
+    getArticles();
+  }, [searchItem]);
+
+  const handleInputChange = (event) => {
+    setCurrentQuery(event.target.value);
+    setAppState((prevState) => ({
+      ...prevState,
+      currentQuery: event.target.value,
+    }));
+  };
+  const handleSearch = (event) => {
+    event.preventDefault();
+    const SearchQuery = document.forms["search"]["searchResult"].value;
+    setAppState((prevState) => ({
+      ...prevState,
+      searchItem: SearchQuery,
+    }));
+    setSearchItem(SearchQuery);
+  };
   return (
-    <Grid container justifyContent="center" sx={{ ml: "11rem" }}>
-      {" "}
-      <Helmet>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Libre+Baskerville&family=Oxygen:wght@700&display=swap"
-          rel="stylesheet"
-        />
-      </Helmet>
-      {news.articles.map((element) => {
-        return <NewsCard key={uiud()} data={element}></NewsCard>;
-      })}
-    </Grid>
+    <>
+      {searchItem ? (
+        <Grid container justifyContent="center" sx={{ ml: "11rem" }}>
+          <CardContent
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              height: "100%",
+              justifyContent: "space-between",
+              justifyContent: "center",
+              mt: "2rem",
+              mr: "20rem",
+            }}
+          >
+            <form id="search" onSubmit={handleSearch}>
+              <input
+                style={{
+                  width: "20rem",
+                  height: "2rem",
+                  borderTopLeftRadius: "3rem",
+                  borderBottomLeftRadius: "3rem",
+                  borderTopRightRadius: "0rem",
+                  borderBottomRightRadius: "0rem",
+                  display: "inline-block",
+                }}
+                type="search"
+                className="form-control "
+                placeholder="Search a news Article"
+                aria-label="Search"
+                aria-describedby="search-addon"
+                name="searchResult"
+                value={currentQuery}
+                onChange={handleInputChange}
+              />
+              <button
+                type="submit"
+                style={{
+                  borderTopRightRadius: "3rem",
+                  borderBottomRightRadius: "3rem",
+                  borderTopLeftRadius: "0rem",
+                  borderBottomLeftRadius: "0rem",
+                  width: "5rem",
+                  height: "2rem",
+                  marginBottom: "0.235rem",
+                  display: "inline-block",
+                }}
+                className="btn btn-outline-primary"
+              >
+                <PlagiarismIcon
+                  style={{ marginTop: "-0.4rem" }}
+                ></PlagiarismIcon>
+              </button>
+            </form>
+
+            <Typography sx={{ ml: "8rem", mt: "2rem" }}>
+              Showing results for{" "}
+              <span style={{ color: "green" }}>{searchItem}</span>
+            </Typography>
+          </CardContent>
+          <Helmet>
+            <link rel="preconnect" href="https://fonts.googleapis.com" />
+            <link
+              rel="preconnect"
+              href="https://fonts.gstatic.com"
+              crossorigin
+            />
+            <link
+              href="https://fonts.googleapis.com/css2?family=Libre+Baskerville&family=Oxygen:wght@700&display=swap"
+              rel="stylesheet"
+            />
+          </Helmet>
+
+          {news.articles ? (
+            news.articles.map((element) => {
+              return <NewsCard key={uiud()} data={element}></NewsCard>;
+            })
+          ) : (
+            <></>
+          )}
+        </Grid>
+      ) : (
+        <Grid container justifyContent="center">
+          <CardContent
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              height: "100%",
+              justifyContent: "space-between",
+              justifyContent: "center",
+              mt: "20rem",
+            }}
+          >
+            <div className="input-group">
+              <form id="search" onSubmit={handleSearch}>
+                <input
+                  style={{
+                    width: "40rem",
+                    height: "4rem",
+                    borderTopLeftRadius: "3rem",
+                    borderBottomLeftRadius: "3rem",
+                    borderTopRightRadius: "0rem",
+                    borderBottomRightRadius: "0rem",
+                    display: "inline-block",
+                  }}
+                  type="search"
+                  className="form-control "
+                  placeholder="Search a news Article"
+                  aria-label="Search"
+                  aria-describedby="search-addon"
+                  name="searchResult"
+                  value={currentQuery}
+                  onChange={handleInputChange}
+                />
+                <button
+                  type="submit"
+                  style={{
+                    borderTopRightRadius: "3rem",
+                    borderBottomRightRadius: "3rem",
+                    borderTopLeftRadius: "0rem",
+                    borderBottomLeftRadius: "0rem",
+                    width: "5rem",
+                    height: "4rem",
+                    marginBottom: "0.235rem",
+                    display: "inline-block",
+                  }}
+                  className="btn btn-outline-primary"
+                >
+                  <PlagiarismIcon fontSize="large"></PlagiarismIcon>
+                </button>
+              </form>
+            </div>
+          </CardContent>
+        </Grid>
+      )}
+    </>
   );
 };
 

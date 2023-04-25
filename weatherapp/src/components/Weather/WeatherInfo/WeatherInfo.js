@@ -7,6 +7,7 @@ import ConditionalWrapper from "../../ConditionalWrapper";
 import HourlyWeather from "./PartsOfPage/HourlyWeather";
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+
 const WeatherInfo = (props) => {
   const [weatherData, changeWeatherData] = useState();
   const [selectedButton, setSelectedButton] = useState('Hourly');
