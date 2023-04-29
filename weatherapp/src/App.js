@@ -1,19 +1,20 @@
-import logo from "./logo.svg";
 import React from "react";
 import "./App.css";
 import Weather from "./components/Weather/Weather.js";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { BrowserRouter as  Router,Route, Routes, Link } from "react-router-dom";
 import News from "./components/News/News";
 import PageNotFound from "./components/PageNotFound";
 import NewsArticle from "./components/News/NewsCard/MoreInfoNewsCard/NewsArticle";
 import { AppStateProvider } from "./components/AppState";
+/**
+ *
+ * @returns App for weather and news
+ */
 function App() {
-  const MemoizeWeather = React.memo(Weather);
-  const MemoizeNews = React.memo(News);
-
   return (
     <>
       <AppStateProvider>
+        {/* wrap code inside context */}
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
           <a style={{ marginLeft: "2rem" }} className="navbar-brand" href="#">
             News and Weather
@@ -46,8 +47,9 @@ function App() {
           </div>
         </nav>
         <Routes>
-          <Route exact path="/" element={<MemoizeWeather />} />
-          <Route path="/News" element={<MemoizeNews />} />
+          {/* Create routes to be used to allow navbar to redirect to components */}
+          <Route exact path="/" element={<Weather />} />
+          <Route path="/News" element={<News />} />
           <Route path="/News/Articles/:userId" element={<NewsArticle />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>

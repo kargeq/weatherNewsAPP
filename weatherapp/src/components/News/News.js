@@ -7,13 +7,17 @@ import NewsCard from "./NewsCard/NewsCard";
 import { v4 as uiud } from "uuid";
 import { AppStateContext } from "../AppState";
 import PlagiarismIcon from "@mui/icons-material/Plagiarism";
+/**
+ * 
+ * @returns news document with search results and information 
+ */
 const News = () => {
   const { appState, setAppState } = useContext(AppStateContext);
   const [searchItem, setSearchItem] = useState();
   const [currentQuery, setCurrentQuery] = useState("");
   const [news, setNews] = useState([]);
   useEffect(() => {
-    document.title = "News";
+    document.title = "News";//set title
 
     if (appState.currentQuery && appState.searchItem) {
       setSearchItem(appState.searchItem);
@@ -21,7 +25,7 @@ const News = () => {
     }
   }, []);
 
-  useEffect(() => {
+  useEffect(() => { //if submission state var changes make api call 
     const getArticles = async () => {
       if (news === [] && appState.news !== [] && appState.news) {
         setNews(appState.news);
@@ -142,8 +146,23 @@ const News = () => {
           </Helmet>
 
           {news.articles ? (
-            news.articles.map((element) => {
-              return <NewsCard key={uiud()} data={element}></NewsCard>;
+            news.articles.map((element) => { //return data from api if applicable 
+              return (
+                <NewsCard
+                  key={uiud()}
+                  data={{
+                    ...element,
+                    description:
+                      element.description === null || element.description === ""
+                        ? "No Description Found"
+                        : element.description,
+                    urlToImage:
+                      element.urlToImage === null
+                        ? "https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg"
+                        : element.urlToImage,
+                  }}
+                ></NewsCard>
+              );
             })
           ) : (
             <></>

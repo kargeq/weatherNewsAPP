@@ -1,5 +1,10 @@
+/**
+ * 
+ * @returns validation error of no location being found
+ * @description inspired by   //https://frontendshape.com/post/bootstrap-5-404-page-examples
+ */
 const LocationNotFound = () => {
-  //https://frontendshape.com/post/bootstrap-5-404-page-examples
+
 
   return (
     <div className="d-flex align-items-center justify-content-center vh-30">
