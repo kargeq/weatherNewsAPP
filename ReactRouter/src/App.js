@@ -5,6 +5,7 @@ import { BrowserRouter as  Router,Route, Routes, Link } from "react-router-dom";
 import News from "./components/News/News";
 import PageNotFound from "./components/PageNotFound";
 import NewsArticle from "./components/News/NewsCard/MoreInfoNewsCard/NewsArticle";
+import Miniproject from "./components/MiniProject/Miniproject";
 import { AppStateProvider } from "./components/AppState";
 /**
  *
@@ -43,6 +44,11 @@ function App() {
                   News
                 </Link>
               </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/Miniproject">
+                Miniproject
+                </Link>
+              </li>
             </ul>
           </div>
         </nav>
@@ -52,6 +58,7 @@ function App() {
           <Route path="/News" element={<News />} />
           <Route path="/News/Articles/:userId" element={<NewsArticle />} />
           <Route path="*" element={<PageNotFound />} />
+          <Route path="/Miniproject" element={<Miniproject />} />
         </Routes>
       </AppStateProvider>
     </>
