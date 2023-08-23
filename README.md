@@ -94,7 +94,7 @@ _Below is an example of how you can instruct your audience on installing and set
    ```
 3. create a .env folder in the root directory
 
-4. add the API keys mentioned in the [Prerequisites](https://github.com/kargeq/weatherNewsAPP#Prerequisites)
+4. add the API keys mentioned in the <a href="#prerequisites">Prerequisites</a>
    ```js
    REACT_APP_News_API_KEY=YOUR_NEWS_API KEY goes here
    REACT_APP_WEATHER_LOCATION_API_KEY=Your Open Weather API GOES HERE
