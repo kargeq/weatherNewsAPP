@@ -194,7 +194,7 @@ const Weather = () => {
           <Grid container justifyContent="center">
             <Card
               sx={{
-                backgroundColor: "#82c09a",
+                backgroundColor: "#a8a88d",
                 width: 0.75,
                 mt: "2rem",
                 mb: "2rem",
